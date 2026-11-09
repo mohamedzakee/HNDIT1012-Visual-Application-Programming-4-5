@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>C# Lab — HNDIT1012 Weeks 4 & 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f6f3ec; --card:#fffdf8; --ink:#1d1b26; --muted:#6b6676; --line:#e3ddd0;
+  --accent:#5b3fd6; --accent-soft:#ece7ff; --good:#1f8a5b; --good-soft:#e2f4ea; --bad:#c2410c; --bad-soft:#fdeadf;
+  --code-bg:#1e1b2e; --code-ink:#e9e6f5; --kw:#c4a7ff; --str:#ffd38a; --num:#8ee6c4; --com:#8a84a3; --type:#7cc7ff;
+  --radius:14px;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:16px;line-height:1.55}
+code,pre,.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+header{padding:28px 24px 0;max-width:1100px;margin:0 auto}
+.kicker{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:600}
+h1{font-family:Fraunces,serif;font-weight:800;font-size:clamp(28px,4vw,42px);line-height:1.1;margin:6px 0 6px}
+.sub{color:var(--muted);margin:0 0 18px;max-width:680px}
+nav{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--paper) 92%,transparent);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+nav .wrap{max-width:1100px;margin:0 auto;padding:8px 18px;display:flex;gap:6px;overflow-x:auto}
+nav a{flex:none;text-decoration:none;color:var(--ink);padding:8px 14px;border-radius:999px;font-weight:500;font-size:15px}
+nav a:hover{background:var(--accent-soft)}
+nav a.on{background:var(--ink);color:#fff}
+main{max-width:1100px;margin:0 auto;padding:22px 18px 80px}
+section.view{display:none}
+section.view.on{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+h2{font-family:Fraunces,serif;font-size:28px;margin:4px 0 6px}
+h3{font-size:18px;margin:18px 0 6px}
+p.lead{color:var(--muted);margin-top:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+pre.code{background:var(--code-bg);color:var(--code-ink);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:14px;line-height:1.6;margin:10px 0}
+.kw{color:var(--kw)} .ty{color:var(--type)} .st{color:var(--str)} .nu{color:var(--num)} .co{color:var(--com);font-style:italic}
+code.i{background:var(--accent-soft);color:#3b2a99;padding:1px 6px;border-radius:6px;font-size:.9em}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+button,.btn{font:inherit;border:1px solid var(--ink);background:var(--ink);color:#fff;padding:9px 16px;border-radius:10px;cursor:pointer;font-weight:500}
+button.ghost{background:transparent;color:var(--ink)}
+button:disabled{opacity:.35;cursor:not-allowed}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+input,select{font:inherit;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}
+input.mono{font-family:"JetBrains Mono",monospace}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.pill{display:inline-block;font-size:12px;font-weight:600;padding:2px 9px;border-radius:999px;background:var(--accent-soft);color:var(--accent)}
+.ok{color:var(--good)} .no{color:var(--bad)}
+.note{border-left:4px solid var(--accent);background:var(--accent-soft);padding:10px 14px;border-radius:0 10px 10px 0;margin:12px 0;font-size:15px}
+.warn{border-left-color:var(--bad);background:var(--bad-soft)}
+/* topic accordion */
+details.topic{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:12px;overflow:hidden}
+details.topic summary{list-style:none;cursor:pointer;padding:16px 20px;display:flex;align-items:center;gap:14px}
+details.topic summary::-webkit-details-marker{display:none}
+details.topic summary .num{font-family:Fraunces,serif;font-weight:800;font-size:22px;color:var(--accent);width:34px}
+details.topic summary .t{font-weight:600;font-size:18px}
+details.topic summary .d{color:var(--muted);font-size:14px}
+details.topic summary .chev{margin-left:auto;transition:transform .2s}
+details.topic[open] summary .chev{transform:rotate(90deg)}
+details.topic .body{padding:0 20px 18px 68px}
+@media (max-width:640px){details.topic .body{padding:0 16px 16px}}
+/* tracer */
+.tracer{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:14px}
+@media (max-width:820px){.tracer{grid-template-columns:1fr}}
+.codeview{background:var(--code-bg);color:var(--code-ink);border-radius:12px;padding:10px 0;font-family:"JetBrains Mono",monospace;font-size:14px;overflow-x:auto}
+.codeview .ln{display:flex;padding:1px 14px 1px 0;white-space:pre;border-left:4px solid transparent}
+.codeview .ln .n{width:38px;text-align:right;color:#5f5a78;padding-right:14px;flex:none;user-select:none}
+.codeview .ln.cur{background:rgba(196,167,255,.18);border-left-color:var(--kw)}
+.console{background:#0f0e17;color:#b7f5c9;border-radius:12px;padding:12px 14px;font-family:"JetBrains Mono",monospace;font-size:14px;min-height:110px;white-space:pre-wrap;max-height:240px;overflow:auto}
+.vars td{font-family:"JetBrains Mono",monospace}
+.vars tr.changed td{background:var(--good-soft)}
+.stepnote{font-size:15px;min-height:48px;padding:10px 14px;border-radius:10px;background:var(--accent-soft)}
+.progress{height:6px;background:var(--line);border-radius:6px;overflow:hidden}
+.progress>div{height:100%;background:var(--accent);transition:width .2s}
+/* quiz */
+.opt{display:block;width:100%;text-align:left;background:#fff;color:var(--ink);border:1px solid var(--line);margin:8px 0;padding:12px 14px;border-radius:10px;font-weight:400}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt.right{background:var(--good-soft);border-color:var(--good)}
+.opt.wrong{background:var(--bad-soft);border-color:var(--bad)}
+.opt:disabled{opacity:1;cursor:default}
+.score{font-family:Fraunces,serif;font-size:56px;font-weight:800;line-height:1}
+/* flashcards */
+.flip{perspective:1200px;height:260px;cursor:pointer}
+.flip .in{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.flip.on .in{transform:rotateY(180deg)}
+.flip .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:var(--radius);padding:24px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;border:1px solid var(--line)}
+.flip .front{background:var(--card)}
+.flip .back{background:var(--ink);color:#fff;transform:rotateY(180deg)}
+.flip .face .q{font-family:Fraunces,serif;font-size:24px;font-weight:600}
+.flip .back code.i{background:rgba(255,255,255,.15);color:#fff}
+.out{font-family:"JetBrains Mono",monospace;background:#0f0e17;color:#b7f5c9;padding:12px 14px;border-radius:10px;white-space:pre-wrap;min-height:46px;word-break:break-all}
+.out .ctl{color:#ffb38a;background:rgba(255,179,138,.12);border-radius:4px;padding:0 3px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chips button{background:#fff;color:var(--ink);border:1px solid var(--line);padding:5px 10px;font-family:"JetBrains Mono",monospace;font-size:13px}
+footer{color:var(--muted);font-size:13px;text-align:center;padding:20px}
+</style>
+</head>
+<body>
+<header>
+  <div class="kicker">HNDIT1012 · Visual Application Programming</div>
+  <h1>C# Lab: Weeks 4 &amp; 5</h1>
+  <p class="sub">Variables, strings, decisions and loops. Learn each topic, step through real code line by line, play with escape sequences, then test yourself.</p>
+</header>
+<nav><div class="wrap" id="nav">
+  <a href="#learn">Learn</a>
+  <a href="#tracer">Code tracer</a>
+  <a href="#strings">String lab</a>
+  <a href="#loops">Loop builder</a>
+  <a href="#quiz">Quiz</a>
+  <a href="#cards">Flashcards</a>
+  <a href="#cheat">Cheat sheet</a>
+</div></nav>
+
+<main>
+<!-- LEARN -->
+<section class="view" id="v-learn">
+  <h2>Learn</h2>
+  <p class="lead">Six topics from the two lectures. Open one at a time and type the examples into Visual Studio as you go.</p>
+  <div id="topics"></div>
+</section>
+
+<!-- TRACER -->
+<section class="view" id="v-tracer">
+  <h2>Code tracer</h2>
+  <p class="lead">Pick a program and press <b>Step</b>. The highlighted line is about to run; watch the variables and the console change.</p>
+  <div class="row" style="margin-bottom:12px">
+    <select id="progSel" aria-label="Program"></select>
+    <span id="paramBox" class="row"></span>
+  </div>
+  <div class="tracer">
+    <div>
+      <div class="codeview" id="codeview"></div>
+      <div class="row" style="margin-top:12px">
+        <button id="tReset" class="ghost">Reset</button>
+        <button id="tBack" class="ghost">◀ Back</button>
+        <button id="tStep">Step ▶</button>
+        <button id="tPlay" class="ghost">Auto-play</button>
+        <span class="mono" id="tCount" style="color:var(--muted);font-size:14px"></span>
+      </div>
+      <div class="progress" style="margin-top:10px"><div id="tBar"></div></div>
+    </div>
+    <div class="grid" style="align-content:start">
+      <div class="stepnote" id="tNote"></div>
+      <div class="card" style="padding:12px 14px">
+        <div style="font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600">Variables</div>
+        <table class="vars" id="tVars"></table>
+      </div>
+      <div>
+        <div style="font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600;margin-bottom:6px">Console output</div>
+        <div class="console" id="tOut"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STRINGS -->
+<section class="view" id="v-strings">
+  <h2>String lab</h2>
+  <p class="lead">Type the inside of a C# string literal and see exactly what <code class="i">Console.WriteLine</code> would print. Flip the <b>@ verbatim</b> switch to compare.</p>
+  <div class="grid g2">
+    <div class="card">
+      <label class="row" style="margin-bottom:10px"><input type="checkbox" id="verb"> <b>@ verbatim string</b></label>
+      <div class="mono" id="litPreview" style="font-size:14px;color:var(--muted);margin-bottom:6px"></div>
+      <input id="lit" class="mono" style="width:100%" value="Name:\tZara\nPath: C:\\Users\\Zara\nShe said \&quot;Hi\&quot;" aria-label="String literal contents">
+      <div style="margin:12px 0 6px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600">Try one</div>
+      <div class="chips" id="litChips"></div>
+      <div id="litErr"></div>
+    </div>
+    <div class="card">
+      <div style="font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600;margin-bottom:6px">Console output</div>
+      <div class="out" id="litOut"></div>
+      <div style="font-size:13px;color:var(--muted);margin-top:8px">Orange marks show invisible characters: ⇥ tab, ⏎ carriage return, 🔔 bell, ⌫ backspace.</div>
+      <h3>Escape sequences found</h3>
+      <table id="litTable"></table>
+    </div>
+  </div>
+  <div class="card" style="margin-top:14px">
+    <h3 style="margin-top:0">Identifier checker</h3>
+    <p style="margin-top:0;color:var(--muted)">Is it a legal variable name under the lecture's rules?</p>
+    <input id="idIn" class="mono" value="totalMarks" style="width:100%;max-width:360px" aria-label="Identifier">
+    <ul id="idOut" style="margin:10px 0 0;padding-left:20px"></ul>
+  </div>
+</section>
+
+<!-- LOOP BUILDER -->
+<section class="view" id="v-loops">
+  <h2>Loop builder</h2>
+  <p class="lead">Change the three parts of a loop and see how many times it runs. Switch loop type to see why <code class="i">do...while</code> always runs once.</p>
+  <div class="card">
+    <div class="row">
+      <label>Loop <select id="lbType"><option value="for">for</option><option value="while">while</option><option value="do">do...while</option></select></label>
+      <label>start <input id="lbStart" type="number" value="0" style="width:80px"></label>
+      <label>condition i <select id="lbOp"><option>&lt;</option><option>&lt;=</option><option>&gt;</option><option>&gt;=</option><option>!=</option></select></label>
+      <input id="lbEnd" type="number" value="5" style="width:80px" aria-label="Limit">
+      <label>step <select id="lbStepOp"><option value="+">i +=</option><option value="-">i -=</option></select></label>
+      <input id="lbStep" type="number" value="1" style="width:70px" aria-label="Step">
+    </div>
+    <div class="row" style="margin-top:10px">
+      <label>Extra: <select id="lbExtra"><option value="none">nothing</option><option value="break">break when i == X</option><option value="continue">continue when i == X</option></select></label>
+      <label>X = <input id="lbX" type="number" value="3" style="width:70px"></label>
+    </div>
+    <pre class="code" id="lbCode"></pre>
+    <div class="row" style="justify-content:space-between">
+      <div><span id="lbRuns" style="font-family:Fraunces,serif;font-size:34px;font-weight:800"></span> <span style="color:var(--muted)">body executions</span></div>
+    </div>
+    <div class="out" id="lbOut" style="margin-top:8px"></div>
+    <div id="lbMsg"></div>
+  </div>
+</section>
+
+<!-- QUIZ -->
+<section class="view" id="v-quiz">
+  <h2>Quiz</h2>
+  <p class="lead">20 questions in random order: concepts and "what's the output?". You get the explanation after each answer.</p>
+  <div id="quizBox"></div>
+</section>
+
+<!-- FLASHCARDS -->
+<section class="view" id="v-cards">
+  <h2>Flashcards</h2>
+  <p class="lead">Tap the card to flip it. Use the arrows to move through the deck.</p>
+  <div style="max-width:620px;margin:0 auto">
+    <div class="flip" id="flip" tabindex="0" role="button" aria-label="Flip card"><div class="in">
+      <div class="face front"><span class="pill" id="fcTag"></span><div class="q" id="fcQ" style="margin-top:12px"></div><div style="color:var(--muted);font-size:13px;margin-top:16px">tap to flip</div></div>
+      <div class="face back"><div id="fcA" style="font-size:18px"></div></div>
+    </div></div>
+    <div class="row" style="justify-content:center;margin-top:14px">
+      <button class="ghost" id="fcPrev">◀</button>
+      <span class="mono" id="fcCount"></span>
+      <button class="ghost" id="fcNext">▶</button>
+      <button class="ghost" id="fcShuf">Shuffle</button>
+    </div>
+  </div>
+</section>
+
+<!-- CHEAT -->
+<section class="view" id="v-cheat">
+  <h2>Cheat sheet</h2>
+  <p class="lead">Everything on one screen for last-minute revision.</p>
+  <div class="grid g3" id="cheatGrid"></div>
+</section>
+</main>
+<footer>Built from the HNDIT1012 Week 4 and Week 5 lecture slides.</footer>
+
+<script>
+/* ---------- helpers ---------- */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const KW = new Set("if else switch case default break continue for while do return class static void new true false goto throw".split(" "));
+const TY = new Set("int double char bool string var Console Int32 Convert".split(" "));
+function hl(src){
+  let out="", i=0;
+  while(i<src.length){
+    const r=src.slice(i);
+    let m;
+    if((m=r.match(/^\/\/.*/))){out+=`<span class="co">${esc(m[0])}</span>`;}
+    else if((m=r.match(/^\$?@?"(?:[^"\\]|\\.)*"/))||(m=r.match(/^'(?:[^'\\]|\\.)*'/))){out+=`<span class="st">${esc(m[0])}</span>`;}
+    else if((m=r.match(/^\d+(\.\d+)?[DdFfMm]?\b/))){out+=`<span class="nu">${m[0]}</span>`;}
+    else if((m=r.match(/^[A-Za-z_]\w*/))){const w=m[0];out+=KW.has(w)?`<span class="kw">${w}</span>`:TY.has(w)?`<span class="ty">${w}</span>`:w;}
+    else {m=[r[0]];out+=esc(r[0]);}
+    i+=m[0].length;
+  }
+  return out;
+}
+const code = s => `<pre class="code">${hl(s.trim())}</pre>`;
+const store = {get(k,d){try{const v=localStorage.getItem("cslab-"+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem("cslab-"+k,JSON.stringify(v))}catch(e){}}};
+
+/* ---------- routing ---------- */
+const views=["learn","tracer","strings","loops","quiz","cards","cheat"];
+function route(){
+  const h=(location.hash||"#learn").slice(1); const v=views.includes(h)?h:"learn";
+  views.forEach(x=>{$("#v-"+x).classList.toggle("on",x===v)});
+  document.querySelectorAll("#nav a").forEach(a=>a.classList.toggle("on",a.getAttribute("href")==="#"+v));
+}
+addEventListener("hashchange",route);
+
+/* ---------- LEARN ---------- */
+const TOPICS=[
+ {t:"Variables & data types",d:"type name = value;",w:"Week 4",h:`
+  <p>A <b>variable</b> is a named container that stores a data value. In C# you must state its <b>type</b> when you create it.</p>
+  <p>Syntax: <code class="i">type variableName = value;</code></p>
+  ${code(`int myNum = 5;              // whole number
+double myDoubleNum = 5.99D; // decimal number
+char myLetter = 'D';        // ONE character, single quotes
+bool myBool = true;         // true or false
+string myText = "Hello";    // text, double quotes`)}
+  <table><tr><th>Type</th><th>Stores</th><th>Example</th></tr>
+  <tr><td><code class="i">int</code></td><td>Whole numbers</td><td>5, -20</td></tr>
+  <tr><td><code class="i">double</code></td><td>Decimals</td><td>5.99</td></tr>
+  <tr><td><code class="i">char</code></td><td>One character</td><td>'D'</td></tr>
+  <tr><td><code class="i">bool</code></td><td>true / false</td><td>true</td></tr>
+  <tr><td><code class="i">string</code></td><td>Text</td><td>"Hello"</td></tr></table>
+  <h3>Many variables at once</h3><p>Same type, separated by commas:</p>${code(`int x = 5, y = 6, z = 50;`)}
+  <div class="note"><b>'D'</b> is a char. <b>"D"</b> is a string. Mixing them up is a classic compile error.</div>`},
+ {t:"Identifiers & naming rules",d:"Legal and sensible names",w:"Week 4",h:`
+  <p>Every variable needs a unique name called an <b>identifier</b>. Prefer descriptive names like <code class="i">age</code>, <code class="i">sum</code> or <code class="i">totalVolume</code> over <code class="i">x</code>.</p>
+  <ol><li>Letters, digits and underscore <code class="i">_</code> only</li><li>Must begin with a letter</li><li>Should start lowercase; no whitespace</li><li>Case sensitive: <code class="i">myVar</code> ≠ <code class="i">myvar</code></li><li>No reserved words such as <code class="i">int</code> or <code class="i">double</code></li></ol>
+  <div class="note">Test names in the <a href="#strings">Identifier checker</a>. Going further: the compiler also allows a leading underscore (<code class="i">_count</code>) and <code class="i">@int</code>; lowercase-first is a convention, not a compiler rule.</div>`},
+ {t:"Escape sequences & verbatim strings",d:"\\n  \\t  \\\"  \\\\  and @\"...\"",w:"Week 4",h:`
+  <p>The backslash <code class="i">\\</code> is the <b>escape character</b>. Put it before a special character to include it in a string.</p>
+  ${code(`string text = "This is a \\"string\\" in C#.";  // This is a "string" in C#.
+string str  = "xyzdef\\\\rabc";                  // xyzdef\\rabc
+string path = "\\\\\\\\mypc\\\\shared\\\\project";      // \\\\mypc\\shared\\project`)}
+  <table><tr><th>Sequence</th><th>Meaning</th></tr>
+  <tr><td><code class="i">\\n</code></td><td>New line</td></tr><tr><td><code class="i">\\t</code></td><td>Horizontal tab</td></tr>
+  <tr><td><code class="i">\\"</code></td><td>Double quote</td></tr><tr><td><code class="i">\\'</code></td><td>Single quote</td></tr>
+  <tr><td><code class="i">\\\\</code></td><td>Backslash</td></tr><tr><td><code class="i">\\r</code></td><td>Carriage return</td></tr>
+  <tr><td><code class="i">\\a \\b \\f \\v</code></td><td>Bell, backspace, form feed, vertical tab</td></tr>
+  <tr><td><code class="i">\\xhh \\uhhhh</code></td><td>Character by hex / Unicode code</td></tr></table>
+  <h3>Verbatim strings</h3><p>Prefix with <code class="i">@</code>: backslashes are plain characters and line breaks are kept. Perfect for file paths.</p>
+  ${code(`string str   = @"xyzdef\\rabc";
+string path  = @"\\\\mypc\\shared\\project";
+string email = @"test@test.com";`)}
+  <div class="note warn">The slide table also lists <code class="i">\\?</code> and octal <code class="i">\\ooo</code>. Those are C/C++ only and do not compile in C#.</div>`},
+ {t:"if, else, else if & ternary",d:"Making decisions",w:"Week 4",h:`
+  <p>A <b>condition</b> is an expression that is <code class="i">true</code> or <code class="i">false</code>, built with <code class="i">&gt; &lt; &gt;= &lt;= == !=</code>.</p>
+  <h3>if</h3>${code(`int x = 20, y = 18;
+if (x > y)
+{
+    Console.WriteLine("x is greater than y");
+}`)}
+  <h3>if ... else</h3>${code(`int time = 20;
+if (time < 18)
+    Console.WriteLine("Good day.");
+else
+    Console.WriteLine("Good evening.");   // this runs`)}
+  <h3>else if</h3><p>Conditions are checked top to bottom. Only the <b>first</b> true branch runs.</p>${code(`int time = 22;
+if (time < 10)       Console.WriteLine("Good morning.");
+else if (time < 20)  Console.WriteLine("Good day.");
+else                 Console.WriteLine("Good evening.");  // this runs`)}
+  <h3>Ternary operator</h3><p><code class="i">variable = (condition) ? valueIfTrue : valueIfFalse;</code></p>${code(`int time = 20;
+string result = (time < 18) ? "Good day." : "Good evening.";
+Console.WriteLine(result);   // Good evening.`)}
+  <div class="note">Step through the else-if and ternary programs in the <a href="#tracer">Code tracer</a> with your own <code class="i">time</code> value.</div>`},
+ {t:"switch statement",d:"One value, many exact matches",w:"Week 5",h:`
+  <p><code class="i">switch</code> compares one value against a list of <code class="i">case</code> labels and runs the matching section. <code class="i">default</code> runs when nothing matches. Every section ends with <code class="i">break;</code>.</p>
+  ${code(`Console.Write("Enter your selection (1, 2, or 3): ");
+string s = Console.ReadLine();
+int n = Int32.Parse(s);        // ReadLine gives text, convert to int
+switch (n)
+{
+    case 1:
+        Console.WriteLine("Current value is 1");
+        break;
+    case 2:
+        Console.WriteLine("Current value is 2");
+        break;
+    case 3:
+        Console.WriteLine("Current value is 3");
+        break;
+    default:
+        Console.WriteLine("Sorry, invalid selection.");
+        break;
+}`)}
+  <h3>Shared cases</h3>${code(`switch (day)
+{
+    case 6:
+    case 7:
+        Console.WriteLine("Weekend");
+        break;
+    default:
+        Console.WriteLine("Weekday");
+        break;
+}`)}
+  <div class="note">Use <b>switch</b> for exact values (menu options, day numbers). Use <b>else if</b> for ranges like <code class="i">time &lt; 10</code>.</div>`},
+ {t:"Loops: for, while, do...while",d:"Repeating code, break & continue",w:"Week 5",h:`
+  <h3>for</h3><p><code class="i">for (initializer; condition; iterator) body</code>. Initializer runs <b>once</b>; condition is checked <b>before</b> each pass; iterator runs <b>after</b> each pass. All three are optional.</p>
+  ${code(`for (int i = 0; i < 5; i++)
+{
+    Console.WriteLine(i);   // 0 1 2 3 4
+}
+
+for ( ; ; ) { }             // infinite loop: leave with break`)}
+  <h3>break and continue</h3><p><code class="i">break</code> ends the loop now. <code class="i">continue</code> skips to the next pass.</p>
+  ${code(`for (int i = 1; i <= 100; i++)
+{
+    if (i == 5) break;
+    Console.WriteLine(i);   // 1 2 3 4
+}`)}
+  <h3>while</h3><p>Checks first, so it can run <b>zero</b> times.</p>
+  ${code(`int n = 0;
+while (n < 5)
+{
+    n++;
+}
+TextBox1.Text = n.ToString();   // 5`)}
+  <div class="note warn">The slide writes <code class="i">TextBox1.Text = Convert.ToInt32(n);</code>. That will not compile: <code class="i">Text</code> needs a string. Use <code class="i">n.ToString()</code>.</div>
+  <h3>do ... while</h3><p>Runs the body first, then checks, so it runs <b>at least once</b>. Note the semicolon at the end.</p>
+  ${code(`int counter = 0;
+do
+{
+    Console.WriteLine($"Hello World! The counter is {counter}");
+    counter++;
+} while (counter < 10);`)}
+  <table><tr><th></th><th>for</th><th>while</th><th>do...while</th></tr>
+  <tr><td>Checks</td><td>before</td><td>before</td><td>after</td></tr>
+  <tr><td>Min. runs</td><td>0</td><td>0</td><td>1</td></tr>
+  <tr><td>Use when</td><td>count is known</td><td>repeat until something happens</td><td>must run once (menus)</td></tr></table>`}
+];
+$("#topics").innerHTML=TOPICS.map((t,i)=>`<details class="topic"${i===0?" open":""}><summary><span class="num">${i+1}</span><span><div class="t">${t.t} <span class="pill">${t.w}</span></div><div class="d mono">${esc(t.d)}</div></span><span class="chev">›</span></summary><div class="body">${t.h}</div></details>`).join("");
+
+/* ---------- TRACER ---------- */
+function makeTracer(lines, run){ return {lines, run}; }
+// rec helper used by programs
+function Rec(){ const steps=[]; let vars={}, out=""; let prev={};
+  return {
+    set(k,v){vars[k]=v;},
+    print(s){out+=s+"\n";},
+    write(s){out+=s;},
+    step(line,note){ steps.push({line,note,vars:{...vars},prev:{...prev},out}); prev={...vars}; },
+    steps
+  };
+}
+const PROGS=[
+ {name:"for loop: 0 to 4",lines:[
+  "for (int i = 0; i < 5; i++)","{","    Console.WriteLine(i);","}","// loop finished"],
+  gen(){const r=Rec();let i=0;r.set("i",i);r.step(0,"<b>Initializer</b> runs once: <code class='i'>int i = 0</code>.");
+   while(true){const c=i<5;r.step(0,`<b>Condition</b>: ${i} &lt; 5 is <b class='${c?"ok":"no"}'>${c}</b>${c?" → run the body.":" → exit the loop."}`);if(!c)break;
+    r.print(i);r.step(2,`Body prints <b>${i}</b>.`);i++;r.set("i",i);r.step(0,`<b>Iterator</b>: <code class='i'>i++</code> → i is now ${i}.`);}
+   r.step(4,"Done. The body ran 5 times (i = 0 to 4).");return r.steps;}},
+ {name:"break: stop at 5",lines:[
+  "for (int i = 1; i <= 100; i++)","{","    if (i == 5)","    {","        break;","    }","    Console.WriteLine(i);","}","// after the loop"],
+  gen(){const r=Rec();let i=1;r.set("i",i);r.step(0,"Initializer: <code class='i'>int i = 1</code>.");
+   while(true){const c=i<=100;r.step(0,`Condition: ${i} &lt;= 100 is <b class='ok'>${c}</b>.`);
+    const b=i==5;r.step(2,`Is ${i} == 5? <b class='${b?"ok":"no"}'>${b}</b>.`);
+    if(b){r.step(4,"<b>break</b> ends the loop immediately. 5 is never printed.");break;}
+    r.print(i);r.step(6,`Prints ${i}.`);i++;r.set("i",i);r.step(0,`Iterator: i++ → ${i}.`);}
+   r.step(8,"Control continues after the loop. Output: 1 2 3 4.");return r.steps;}},
+ {name:"continue: skip 3",lines:[
+  "for (int i = 1; i <= 5; i++)","{","    if (i == 3)","        continue;","    Console.WriteLine(i);","}"],
+  gen(){const r=Rec();let i=1;r.set("i",i);r.step(0,"Initializer: <code class='i'>int i = 1</code>.");
+   while(true){const c=i<=5;r.step(0,`Condition: ${i} &lt;= 5 is <b class='${c?"ok":"no"}'>${c}</b>.`);if(!c)break;
+    const b=i==3;r.step(2,`Is ${i} == 3? <b class='${b?"ok":"no"}'>${b}</b>.`);
+    if(b){r.step(3,"<b>continue</b>: skip the rest of this pass, jump to the iterator.");}
+    else{r.print(i);r.step(4,`Prints ${i}.`);}
+    i++;r.set("i",i);r.step(0,`Iterator: i++ → ${i}.`);}
+   r.step(5,"Finished. Output: 1 2 4 5.");return r.steps;}},
+ {name:"while loop",param:{label:"start n =",val:0},lines:[
+  "int n = {P};","while (n < 5)","{","    n++;","}","TextBox1.Text = n.ToString();"],
+  gen(P){const r=Rec();let n=P;r.set("n",n);r.step(0,`n starts at ${n}.`);
+   let runs=0;while(true){const c=n<5;r.step(1,`Condition checked <b>first</b>: ${n} &lt; 5 is <b class='${c?"ok":"no"}'>${c}</b>.`);if(!c)break;
+    n++;runs++;r.set("n",n);r.step(3,`n++ → ${n}.`);if(runs>60)break;}
+   r.print("[TextBox1] "+n);r.step(5,`The text box shows <b>${n}</b>. Body ran <b>${runs}</b> time(s).${runs===0?" A while loop can run zero times!":""}`);return r.steps;}},
+ {name:"do...while loop",param:{label:"start counter =",val:7},lines:[
+  "int counter = {P};","do","{","    Console.WriteLine($\"Hello World! The counter is {counter}\");","    counter++;","} while (counter < 10);","// after the loop"],
+  gen(P){const r=Rec();let c=P;r.set("counter",c);r.step(0,`counter starts at ${c}.`);r.step(1,"<b>do</b>: enter the body without checking anything.");
+   let runs=0;while(true){r.print(`Hello World! The counter is ${c}`);r.step(3,`Prints the message with counter = ${c}.`);c++;runs++;r.set("counter",c);r.step(4,`counter++ → ${c}.`);
+    const ok=c<10;r.step(5,`Condition checked <b>after</b> the body: ${c} &lt; 10 is <b class='${ok?"ok":"no"}'>${ok}</b>.`);if(!ok||runs>60)break;}
+   r.step(6,`Body ran <b>${runs}</b> time(s).${P>=10?" Even though the condition was false from the start, do...while ran once.":""}`);return r.steps;}},
+ {name:"else if: greeting",param:{label:"time =",val:22},lines:[
+  "int time = {P};","if (time < 10)","{","    Console.WriteLine(\"Good morning.\");","}","else if (time < 20)","{","    Console.WriteLine(\"Good day.\");","}","else","{","    Console.WriteLine(\"Good evening.\");","}"],
+  gen(P){const r=Rec();r.set("time",P);r.step(0,`time = ${P}.`);
+   const a=P<10;r.step(1,`${P} &lt; 10 is <b class='${a?"ok":"no"}'>${a}</b>.`);
+   if(a){r.print("Good morning.");r.step(3,"First true branch runs. The rest are skipped.");return r.steps;}
+   const b=P<20;r.step(5,`${P} &lt; 20 is <b class='${b?"ok":"no"}'>${b}</b>.`);
+   if(b){r.print("Good day.");r.step(7,"This branch runs; else is skipped.");return r.steps;}
+   r.step(9,"Both conditions were false, so the <b>else</b> block runs.");r.print("Good evening.");r.step(11,"Prints Good evening.");return r.steps;}},
+ {name:"ternary operator",param:{label:"time =",val:20},lines:[
+  "int time = {P};","string result = (time < 18) ? \"Good day.\" : \"Good evening.\";","Console.WriteLine(result);"],
+  gen(P){const r=Rec();r.set("time",P);r.step(0,`time = ${P}.`);const c=P<18;const v=c?"Good day.":"Good evening.";
+   r.step(1,`Condition ${P} &lt; 18 is <b class='${c?"ok":"no"}'>${c}</b>, so the ${c?"first (true)":"second (false)"} value is chosen.`);
+   r.set("result",'"'+v+'"');r.step(1,`result = "${v}".`);r.print(v);r.step(2,"Prints result.");return r.steps;}},
+ {name:"switch: menu",param:{label:"user enters",val:2},lines:[
+  "int n = Int32.Parse(Console.ReadLine());  // user types {P}","switch (n)","{","    case 1:","        Console.WriteLine(\"Current value is 1\");","        break;","    case 2:","        Console.WriteLine(\"Current value is 2\");","        break;","    case 3:","        Console.WriteLine(\"Current value is 3\");","        break;","    default:","        Console.WriteLine(\"Sorry, invalid selection.\");","        break;","}"],
+  gen(P){const r=Rec();r.set("n",P);r.step(0,`ReadLine returns the text "${P}"; Int32.Parse turns it into the number ${P}.`);r.step(1,`switch looks for a case matching ${P}.`);
+   const map={1:3,2:6,3:9};
+   for(const k of [1,2,3]){if(P===k){r.step(map[k],`case ${k} matches!`);r.print(`Current value is ${k}`);r.step(map[k]+1,"Runs this section.");r.step(map[k]+2,"<b>break</b> jumps out of the switch.");r.step(15,"Done.");return r.steps;}}
+   r.step(12,"No case matched, so <b>default</b> runs.");r.print("Sorry, invalid selection.");r.step(13,"Prints the error message.");r.step(14,"break.");r.step(15,"Done.");return r.steps;}},
+ {name:"for with two variables (i, j)",lines:[
+  "int i;","int j = 10;","for (i = 0, Console.WriteLine($\"Start: i={i}, j={j}\");","     i < j;","     i++, j--, Console.WriteLine($\"Step: i={i}, j={j}\"))","{","    // body of the loop","}"],
+  gen(){const r=Rec();let i,j=10;r.set("i","(unset)");r.step(0,"Declare i (no value yet).");r.set("j",j);r.step(1,"j = 10.");
+   i=0;r.set("i",i);r.print(`Start: i=${i}, j=${j}`);r.step(2,"<b>Initializer</b> has two statements: i = 0, then print Start.");
+   while(true){const c=i<j;r.step(3,`<b>Condition</b>: ${i} &lt; ${j} is <b class='${c?"ok":"no"}'>${c}</b>.`);if(!c)break;
+    r.step(6,"Body is empty.");i++;j--;r.set("i",i);r.set("j",j);r.print(`Step: i=${i}, j=${j}`);r.step(4,`<b>Iterator</b> has three statements: i++, j--, print. Now i=${i}, j=${j}.`);}
+   r.step(7,"i and j met at 5, so the loop ends.");return r.steps;}}
+];
+let prog=PROGS[0], steps=[], si=0, timer=null;
+$("#progSel").innerHTML=PROGS.map((p,i)=>`<option value="${i}">${esc(p.name)}</option>`).join("");
+function loadProg(){
+  prog=PROGS[+$("#progSel").value];
+  const pb=$("#paramBox");
+  if(prog.param){ if(!pb.dataset.for||pb.dataset.for!==prog.name){pb.innerHTML=`<label>${prog.param.label} <input id="pIn" type="number" value="${prog.param.val}" style="width:90px"></label>`;pb.dataset.for=prog.name;$("#pIn").addEventListener("input",()=>{buildSteps();});} }
+  else {pb.innerHTML="";pb.dataset.for="";}
+  buildSteps();
+}
+function buildSteps(){
+  stop();
+  let P=prog.param?parseInt($("#pIn").value,10):0; if(isNaN(P))P=0;
+  steps=prog.gen(P); si=0;
+  $("#codeview").innerHTML=prog.lines.map((l,i)=>`<div class="ln" data-l="${i}"><span class="n">${i+1}</span><span>${hl(l.replace("{P}",P))}</span></div>`).join("");
+  render();
+}
+function render(){
+  const s=steps[si];
+  document.querySelectorAll("#codeview .ln").forEach(el=>el.classList.toggle("cur",+el.dataset.l===s.line));
+  $("#tNote").innerHTML=s.note;
+  const keys=Object.keys(s.vars);
+  $("#tVars").innerHTML=keys.length?keys.map(k=>`<tr class="${s.prev[k]!==s.vars[k]?"changed":""}"><td>${esc(k)}</td><td>${esc(s.vars[k])}</td></tr>`).join(""):`<tr><td style="color:var(--muted)">none yet</td></tr>`;
+  $("#tOut").textContent=s.out||"";
+  $("#tOut").scrollTop=1e6;
+  $("#tCount").textContent=`step ${si+1} / ${steps.length}`;
+  $("#tBar").style.width=((si+1)/steps.length*100)+"%";
+  $("#tBack").disabled=si===0; $("#tStep").disabled=si===steps.length-1;
+}
+function stop(){if(timer){clearInterval(timer);timer=null;$("#tPlay").textContent="Auto-play";}}
+$("#progSel").addEventListener("change",loadProg);
+$("#tStep").onclick=()=>{if(si<steps.length-1){si++;render();}};
+$("#tBack").onclick=()=>{stop();if(si>0){si--;render();}};
+$("#tReset").onclick=()=>{stop();si=0;render();};
+$("#tPlay").onclick=()=>{ if(timer){stop();return;} if(si===steps.length-1)si=0; $("#tPlay").textContent="Pause";
+  timer=setInterval(()=>{if(si<steps.length-1){si++;render();}else stop();},900); };
+
+/* ---------- STRING LAB ---------- */
+const ESC={n:["\n","New line"],t:["\t","Tab"],'"':['"',"Double quote"],"'":["'","Single quote"],"\\":["\\","Backslash"],r:["\r","Carriage return"],a:["\x07","Bell"],b:["\b","Backspace"],f:["\f","Form feed"],v:["\v","Vertical tab"],"0":["\0","Null"]};
+function parseLit(src,verbatim){
+  let out="",found=[],errs=[];
+  if(verbatim){
+    for(let i=0;i<src.length;i++){
+      if(src[i]==='"'){ if(src[i+1]==='"'){out+='"';found.push(['""','Double quote (verbatim)']);i++;} else errs.push(`A single " at position ${i+1} would end the string. In a verbatim string write "" for a quote.`);}
+      else out+=src[i];
+    }
+    return {out,found,errs};
+  }
+  for(let i=0;i<src.length;i++){
+    const c=src[i];
+    if(c==='"'){errs.push(`An unescaped " at position ${i+1} would end the string. Write \\" instead.`);out+=c;continue;}
+    if(c!=="\\"){out+=c;continue;}
+    const n=src[i+1];
+    if(n===undefined){errs.push("The string ends with a lone backslash: it would escape the closing quote.");break;}
+    if(ESC[n]){out+=ESC[n][0];found.push(["\\"+n,ESC[n][1]]);i++;continue;}
+    if(n==="u"){const h=src.substr(i+2,4);if(/^[0-9a-fA-F]{4}$/.test(h)){out+=String.fromCharCode(parseInt(h,16));found.push(["\\u"+h,"Unicode character "+String.fromCharCode(parseInt(h,16))]);i+=5;continue;}errs.push("\\u needs exactly 4 hex digits.");i++;continue;}
+    if(n==="x"){const m=src.slice(i+2).match(/^[0-9a-fA-F]{1,4}/);if(m){const ch=String.fromCharCode(parseInt(m[0],16));out+=ch;found.push(["\\x"+m[0],"Hex character "+JSON.stringify(ch)]);i+=1+m[0].length;continue;}errs.push("\\x needs hex digits after it.");i++;continue;}
+    errs.push(`<code class="i">\\${esc(n)}</code> is not a valid escape sequence in C# (compile error CS1009).`);i++;
+  }
+  return {out,found,errs};
+}
+function showOut(s){
+  return esc(s).replace(/\t/g,'<span class="ctl">⇥</span>\t').replace(/\r/g,'<span class="ctl">⏎</span>').replace(/\x07/g,'<span class="ctl">🔔</span>').replace(/\x08/g,'<span class="ctl">⌫</span>').replace(/\f/g,'<span class="ctl">␌</span>').replace(/\v/g,'<span class="ctl">␋</span>').replace(/\0/g,'<span class="ctl">␀</span>');
+}
+function updLit(){
+  const v=$("#verb").checked, src=$("#lit").value;
+  $("#litPreview").innerHTML=hl(`Console.WriteLine(${v?"@":""}"${src}");`);
+  const r=parseLit(src,v);
+  $("#litOut").innerHTML=showOut(r.out)||'<span style="color:#5f5a78">(empty)</span>';
+  $("#litTable").innerHTML=r.found.length?`<tr><th>In code</th><th>Becomes</th></tr>`+r.found.map(f=>`<tr><td class="mono">${esc(f[0])}</td><td>${esc(f[1])}</td></tr>`).join(""):`<tr><td style="color:var(--muted)">${v?"No escapes: in a verbatim string backslashes are plain characters.":"None yet."}</td></tr>`;
+  $("#litErr").innerHTML=r.errs.map(e=>`<div class="note warn">${e}</div>`).join("");
+}
+const CHIPS=[["Tab & new line",'Name:\\tZara\\nAge:\\t20',false],["Quotes",'This is a \\"string\\" in C#.',false],["Slide: \\\\r",'xyzdef\\\\rabc',false],["Path (escaped)",'\\\\\\\\mypc\\\\shared\\\\project',false],["Path (@)",'\\\\mypc\\shared\\project',true],["@ with quotes",'He said ""Hi""',true],["Path trap",'C:\\new\\test',false],["Unicode",'\\u0041\\u0042C',false],["Invalid \\?",'Why\\?',false]];
+$("#litChips").innerHTML=CHIPS.map((c,i)=>`<button data-i="${i}">${esc(c[0])}</button>`).join("");
+$("#litChips").onclick=e=>{const b=e.target.closest("button");if(!b)return;const c=CHIPS[+b.dataset.i];$("#lit").value=c[1];$("#verb").checked=c[2];updLit();};
+$("#lit").addEventListener("input",updLit);$("#verb").addEventListener("change",updLit);
+const CSKW="abstract as base bool break byte case catch char checked class const continue decimal default delegate do double else enum event explicit extern false finally fixed float for foreach goto if implicit in int interface internal is lock long namespace new null object operator out override params private protected public readonly ref return sbyte sealed short sizeof stackalloc static string struct switch this throw true try typeof uint ulong unchecked unsafe ushort using virtual void volatile while".split(" ");
+function checkId(){
+  const s=$("#idIn").value, res=[];
+  if(!s){$("#idOut").innerHTML="<li>Type a name.</li>";return;}
+  const okChars=/^[A-Za-z0-9_]+$/.test(s);
+  res.push([okChars,okChars?"Only letters, digits and underscore":(/\s/.test(s)?"Contains whitespace, which is not allowed":"Contains a character that is not a letter, digit or underscore")]);
+  const startL=/^[A-Za-z]/.test(s);
+  res.push([startL,startL?"Begins with a letter":(/^\d/.test(s)?"Begins with a digit, which is not allowed":"Does not begin with a letter (lecture rule)")]);
+  const kw=CSKW.includes(s);
+  res.push([!kw,kw?`"${s}" is a reserved C# keyword`:"Not a reserved keyword"]);
+  const lower=/^[a-z]/.test(s);
+  const valid=okChars&&startL&&!kw;
+  let html=res.map(r=>`<li class="${r[0]?"ok":"no"}">${r[0]?"✓":"✗"} ${esc(r[1])}</li>`).join("");
+  if(valid&&!lower)html+=`<li style="color:var(--muted)">• Legal, but convention says start with a lowercase letter (camelCase), e.g. <code class="i">${esc(s[0].toLowerCase()+s.slice(1))}</code></li>`;
+  html+=`<li style="margin-top:6px;font-weight:600" class="${valid?"ok":"no"}">${valid?"Valid identifier":"Invalid identifier"}</li>`;
+  $("#idOut").innerHTML=html;
+}
+$("#idIn").addEventListener("input",checkId);
+
+/* ---------- LOOP BUILDER ---------- */
+function updLoop(){
+  const type=$("#lbType").value, a=parseInt($("#lbStart").value,10)||0, op=$("#lbOp").value, b=parseInt($("#lbEnd").value,10)||0;
+  const sop=$("#lbStepOp").value, st=parseInt($("#lbStep").value,10)||0, ex=$("#lbExtra").value, X=parseInt($("#lbX").value,10)||0;
+  const step=sop==="+"?st:-st;
+  const cond=i=>op==="<"?i<b:op==="<="?i<=b:op===">"?i>b:op===">="?i>=b:i!==b;
+  const it=`i ${sop}= ${st}`;
+  const extra=ex==="none"?"":`    if (i == ${X}) ${ex};\n`;
+  let src;
+  if(type==="for") src=`for (int i = ${a}; i ${op} ${b}; ${it})\n{\n${extra}    Console.Write(i + " ");\n}`;
+  else if(type==="while") src=`int i = ${a};\nwhile (i ${op} ${b})\n{\n${ex==="continue"?`    if (i == ${X}) { ${it}; continue; }\n`:extra}    Console.Write(i + " ");\n    ${it};\n}`;
+  else src=`int i = ${a};\ndo\n{\n${ex==="continue"?`    if (i == ${X}) { ${it}; continue; }\n`:extra}    Console.Write(i + " ");\n    ${it};\n} while (i ${op} ${b});`;
+  $("#lbCode").innerHTML=hl(src);
+  let i=a, runs=0, out=[], LIMIT=200, inf=false, first=true;
+  while(true){
+    if(type!=="do"||!first){ if(!cond(i))break; }
+    first=false; runs++;
+    if(runs>LIMIT){inf=true;runs--;break;}
+    if(ex==="break"&&i===X)break;
+    if(!(ex==="continue"&&i===X)) out.push(i);
+    i+=step;
+  }
+  $("#lbRuns").textContent=inf?"∞":runs;
+  $("#lbOut").textContent=out.join(" ")+(inf?" …":"")||"(nothing printed)";
+  let msg="";
+  if(inf) msg=`<div class="note warn"><b>Infinite loop!</b> The condition never becomes false${st===0?" because the step is 0":" because i moves away from the limit"}. A real program would hang. Stopped after ${LIMIT} passes.</div>`;
+  else if(runs===0) msg=`<div class="note">The condition <code class="i">${a} ${esc(op)} ${b}</code> is false at the start, so the body never runs. Switch to <b>do...while</b> and watch it run once.</div>`;
+  else if(type==="do"&&!cond(a)) msg=`<div class="note">The condition was false from the start, but <b>do...while</b> still ran the body once.</div>`;
+  if(ex==="break"&&!inf) msg+=`<div class="note"><b>break</b> stops the loop the moment i equals ${X}; ${X} itself is not printed.</div>`;
+  if(ex==="continue"&&!inf) msg+=`<div class="note"><b>continue</b> skips printing ${X}, but the loop carries on.</div>`;
+  $("#lbMsg").innerHTML=msg;
+}
+["lbType","lbStart","lbOp","lbEnd","lbStepOp","lbStep","lbExtra","lbX"].forEach(id=>{$("#"+id).addEventListener("input",updLoop);$("#"+id).addEventListener("change",updLoop);});
+
+/* ---------- QUIZ ---------- */
+const Q=[
+ {q:"Which declaration stores a single character correctly?",o:['char c = "A";',"char c = 'A';","string c = 'A';","char c = A;"],a:1,e:"A char uses single quotes. Double quotes make a string."},
+ {q:"Which is a valid C# identifier?",o:["2total","total marks","totalMarks","double"],a:2,e:"It starts with a letter, has no spaces and is not a keyword."},
+ {q:"What does the escape sequence \\t represent?",o:["New line","Horizontal tab","Backspace","Bell"],a:1,e:"\\t inserts a horizontal tab; \\n is the new line."},
+ {q:'What is printed by Console.WriteLine(@"C:\\new\\test");',o:["C: then a new line, then ew, a tab, est","C:\\new\\test","C:\\\\new\\\\test","Compile error"],a:1,e:"In a verbatim (@) string, backslashes are plain characters."},
+ {q:'int a = 7;\nstring r = (a % 2 == 0) ? "Even" : "Odd";\nWhat is r?',code:true,o:["Even","Odd","7","true"],a:1,e:"7 % 2 is 1, so the condition is false and the second value is used."},
+ {q:"Which loop always executes its body at least once?",o:["for","while","do...while","None of them"],a:2,e:"do...while checks its condition after the body."},
+ {q:"In for (initializer; condition; iterator), which part runs only once?",o:["initializer","condition","iterator","body"],a:0,e:"The initializer runs once before the loop starts."},
+ {q:"What does break; do inside a switch section?",o:["Jumps to default","Restarts the switch","Exits the switch","Skips to the next case"],a:2,e:"break ends the closest enclosing switch or loop."},
+ {q:"myVar and myvar in the same program are:",o:["The same variable","Two different variables","A compile error","Keywords"],a:1,e:"C# is case sensitive."},
+ {q:"What does int x = 5, y = 6, z = 50; do?",o:["Declares one int","Declares three ints of the same type","It is invalid","Creates an array"],a:1,e:"A comma-separated list declares many variables of the same type."},
+ {q:'int time = 15;\nif (time < 10) Console.WriteLine("Good morning.");\nelse if (time < 20) Console.WriteLine("Good day.");\nelse Console.WriteLine("Good evening.");',code:true,o:["Good morning.","Good day.","Good evening.","Good day. Good evening."],a:1,e:"15 < 10 is false; 15 < 20 is true. Only the first true branch runs."},
+ {q:'for (int i = 10; i > 0; i -= 3)\n    Console.Write(i + " ");',code:true,o:["10 7 4 1","10 7 4 1 -2","10 7 4","9 6 3 0"],a:0,e:"After 1, i becomes -2 and -2 > 0 is false."},
+ {q:"int n = 10;\nwhile (n < 5) { n++; }\nConsole.WriteLine(n);",code:true,o:["5","10","11","Infinite loop"],a:1,e:"10 < 5 is false at the start, so the body never runs."},
+ {q:"int n = 10;\ndo { n++; } while (n < 5);\nConsole.WriteLine(n);",code:true,o:["10","5","11","Nothing"],a:2,e:"do...while runs the body once before checking."},
+ {q:'int x = 4;\nswitch (x)\n{\n  case 1: Console.WriteLine("One"); break;\n  case 2: Console.WriteLine("Two"); break;\n  default: Console.WriteLine("Other"); break;\n}',code:true,o:["One","Two","Other","Nothing"],a:2,e:"No case matches 4, so default runs."},
+ {q:'for (int i = 1; i <= 10; i++)\n{\n  if (i % 2 == 0) continue;\n  if (i > 7) break;\n  Console.Write(i + " ");\n}',code:true,o:["1 3 5 7","1 3 5 7 9","2 4 6","1 2 3 4 5 6 7"],a:0,e:"Even numbers are skipped by continue. At i = 9 the break runs."},
+ {q:'Console.WriteLine("A\\"B\\"\\\\C");',code:true,o:['A"B"\\C','A\\"B\\"\\\\C','A"B"C','Compile error'],a:0,e:'\\" prints a quote and \\\\ prints one backslash.'},
+ {q:"How many times does for (int i = 0; i <= 5; i++) run its body?",o:["4","5","6","Infinite"],a:2,e:"i takes the values 0, 1, 2, 3, 4, 5: six passes. Watch < vs <=."},
+ {q:"Why does TextBox1.Text = Convert.ToInt32(n); fail to compile?",o:["TextBox1 is not declared","Text needs a string but ToInt32 returns an int","Convert does not exist","n must be a double"],a:1,e:"Use n.ToString() or Convert.ToString(n)."},
+ {q:"Which statement skips the rest of the current loop pass and moves to the next one?",o:["break","continue","return","default"],a:1,e:"continue jumps to the next iteration; break leaves the loop."}
+];
+let qs=[],qi=0,score=0,answered=false;
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function startQuiz(){qs=shuffle(Q);qi=0;score=0;showQ();}
+function showQ(){
+  answered=false;
+  if(qi>=qs.length){
+    const best=Math.max(store.get("best",0),score);store.set("best",best);
+    const pct=Math.round(score/qs.length*100);
+    $("#quizBox").innerHTML=`<div class="card" style="text-align:center;padding:36px"><div class="score">${score}/${qs.length}</div><p style="font-size:18px">${pct>=80?"Excellent. You are exam ready.":pct>=60?"Good work. Revise the ones you missed.":"Keep going. Re-read the Learn tab and try the Code tracer."}</p><p style="color:var(--muted)">Best score on this device: ${best}/${qs.length}</p><button id="qAgain">Try again</button></div>`;
+    $("#qAgain").onclick=startQuiz;return;
+  }
+  const q=qs[qi];
+  const order=shuffle(q.o.map((t,i)=>i));
+  $("#quizBox").innerHTML=`<div class="card">
+   <div class="row" style="justify-content:space-between"><span class="pill">Question ${qi+1} of ${qs.length}</span><span class="mono" style="color:var(--muted)">score ${score}</span></div>
+   <div class="progress" style="margin:12px 0"><div style="width:${qi/qs.length*100}%"></div></div>
+   ${q.code?`<p style="font-weight:600;margin:6px 0">What is the output?</p>${code(q.q)}`:`<p style="font-size:18px;font-weight:600">${esc(q.q)}</p>`}
+   <div id="opts">${order.map(i=>`<button class="opt mono" data-i="${i}">${esc(q.o[i])}</button>`).join("")}</div>
+   <div id="qFb"></div></div>`;
+  $("#opts").onclick=e=>{const b=e.target.closest(".opt");if(!b||answered)return;answered=true;
+    const pick=+b.dataset.i, right=pick===q.a; if(right)score++;
+    document.querySelectorAll("#opts .opt").forEach(x=>{x.disabled=true;if(+x.dataset.i===q.a)x.classList.add("right");else if(x===b)x.classList.add("wrong");});
+    $("#qFb").innerHTML=`<div class="note ${right?"":"warn"}"><b>${right?"Correct.":"Not quite."}</b> ${esc(q.e)}</div><button id="qNext">${qi===qs.length-1?"See score":"Next question"}</button>`;
+    $("#qNext").onclick=()=>{qi++;showQ();}; $("#qNext").focus();};
+}
+
+/* ---------- FLASHCARDS ---------- */
+const FC=[
+ ["Variables","Syntax to declare a variable","<code class='i'>type variableName = value;</code><br><br>e.g. <code class='i'>int age = 20;</code>"],
+ ["Variables","Declare three ints in one line","<code class='i'>int x = 5, y = 6, z = 50;</code>"],
+ ["Variables","char vs string literal","char: single quotes <code class='i'>'A'</code><br>string: double quotes <code class='i'>\"A\"</code>"],
+ ["Identifiers","What is an identifier?","The unique name given to a variable, such as <code class='i'>totalVolume</code>."],
+ ["Identifiers","Five naming rules","Letters, digits, _ only · begin with a letter · start lowercase, no spaces · case sensitive · no keywords"],
+ ["Strings","\\n  \\t  \\\"  \\\\","New line · Tab · Double quote · Backslash"],
+ ["Strings","What is a verbatim string?","A string prefixed with <code class='i'>@</code>. Backslashes are literal and line breaks are kept.<br><code class='i'>@\"C:\\Users\\Ali\"</code>"],
+ ["Strings","Quote inside a verbatim string","Double it: <code class='i'>@\"He said \"\"Hi\"\"\"</code>"],
+ ["Decisions","When does an else block run?","When the if condition is <b>false</b>."],
+ ["Decisions","In an else-if chain, how many branches run?","Only the <b>first</b> one whose condition is true (or else if none are)."],
+ ["Decisions","Ternary operator syntax","<code class='i'>variable = (condition) ? valueIfTrue : valueIfFalse;</code>"],
+ ["switch","What does default do?","Runs when no case matches, like a final else."],
+ ["switch","Why is break needed in each case?","It ends the section and exits the switch. C# requires it."],
+ ["Loops","Three sections of a for loop","Initializer (once) · Condition (before each pass) · Iterator (after each pass)"],
+ ["Loops","Write an infinite for loop","<code class='i'>for ( ; ; ) { }</code>"],
+ ["Loops","break vs continue","break: leave the loop now<br>continue: skip to the next pass"],
+ ["Loops","while vs do...while","while checks first (0+ runs)<br>do...while checks after (1+ runs)"],
+ ["Loops","What is missing? } while (i < 10)","The semicolon: <code class='i'>} while (i &lt; 10);</code>"]
+];
+let fc=FC.slice(), fi=0;
+function showFC(){const c=fc[fi];$("#flip").classList.remove("on");$("#fcTag").textContent=c[0];$("#fcQ").textContent=c[1];setTimeout(()=>{$("#fcA").innerHTML=c[2];},150);$("#fcCount").textContent=`${fi+1} / ${fc.length}`;}
+$("#flip").onclick=()=>$("#flip").classList.toggle("on");
+$("#flip").onkeydown=e=>{if(e.key===" "||e.key==="Enter"){e.preventDefault();$("#flip").classList.toggle("on");}};
+$("#fcPrev").onclick=()=>{fi=(fi-1+fc.length)%fc.length;showFC();};
+$("#fcNext").onclick=()=>{fi=(fi+1)%fc.length;showFC();};
+$("#fcShuf").onclick=()=>{fc=shuffle(FC);fi=0;showFC();};
+
+/* ---------- CHEAT ---------- */
+const CHEAT=[
+ ["Declare","int age = 20;\ndouble price = 5.99D;\nchar grade = 'A';\nbool ok = true;\nstring name = \"Ali\";"],
+ ["Many at once","int x = 5, y = 6, z = 50;"],
+ ["Escapes","\"Tab:\\t New line:\\n\"\n\"Quote: \\\" Slash: \\\\\""],
+ ["Verbatim","string p = @\"C:\\folder\\file.txt\";"],
+ ["if / else if / else","if (m >= 75) g = 'A';\nelse if (m >= 65) g = 'B';\nelse g = 'F';"],
+ ["Ternary","string r = (m >= 40) ? \"Pass\" : \"Fail\";"],
+ ["switch","switch (n)\n{\n    case 1: ...; break;\n    default: ...; break;\n}"],
+ ["for","for (int i = 0; i < 5; i++) { }\nfor ( ; ; ) { }  // infinite"],
+ ["while","while (n < 5) { n++; }  // 0+ runs"],
+ ["do...while","do { n++; } while (n < 5);  // 1+ runs"],
+ ["break / continue","if (i == 5) break;     // leave loop\nif (i == 3) continue;  // next pass"],
+ ["Read & convert","int n = int.Parse(Console.ReadLine());\nlabel1.Text = n.ToString();"]
+];
+$("#cheatGrid").innerHTML=CHEAT.map(c=>`<div class="card" style="padding:14px 16px"><div style="font-weight:600">${esc(c[0])}</div>${code(c[1])}</div>`).join("");
+
+/* ---------- init ---------- */
+loadProg(); updLit(); checkId(); updLoop(); startQuiz(); showFC(); route();
+</script>
+</body>
+</html>
